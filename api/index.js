@@ -2,9 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const axios = require('axios');
 const bodyParser = require('body-parser');
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const moviesRoutes = require('./routes/movies.routes');
 

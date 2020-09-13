@@ -11,8 +11,8 @@ exports.getMovie = async (req, res) => {
             return res.send({ message: 'No Movie Founded'});
         }
         return res.send({movies : movies});
-        }
-        catch(e) {
-            return res.json({error: 'Something went wrong...'})
-        };
+    }
+    catch(e) {
+        return res.json({error: 'Something went wrong...'})
+    };
     }

@@ -1,0 +1,25 @@
+body {
+    background: linear-gradient(180deg, #160f12 0%, rgb(3, 52, 85) 100%);
+    color: rgba(255, 255, 255, 0.884);
+}
+
+button {
+    border: 1px solid rgb(143, 143, 8);
+    color: rgba(255, 255, 255, 0.5);
+    background-color: black;
+}
+
+button:hover {
+    border: 1px solid yellow;
+    color: rgba(219, 219, 219, 0.966);
+  
+}
+
+.c-card {
+    border: 1px solid rgba(255, 255, 0, 0.473);
+    background-color: black;
+}
+
+.p-discret {
+    color: grey;
+}

@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { Container, Form } from "react-bootstrap";
+
+import MovieCard from './MovieCard';
 
 const Home = () => {
     const { register, handleSubmit } = useForm();
     const [ movies, setMovies ] = useState([]);
-    const [ moviesLength, setMoviesLength ] = useState([]);
-    const [ title, setTitle ] = useState([]);
     const [ message, setMessage ] = useState('');
     const [ error, setError ] = useState('');
 
     const findMovie = async (data, e) => {
-        const result = await axios.post("/api/movie", data )
+        const result = await axios.post("http://localhost:8080/api/movie", data )
         try {
             if (!result.data.movies) {
                 setMessage(result.data.message);
                 e.target.reset();
             }
             e.target.reset();
-            setMovies(result.data.movies);
-            setMoviesLength(result.data.movies.length)
+            const allmovies = result.data.movies
+            setMovies(allmovies);
         }
         catch (error) {
             setError(result.data.error);
@@ -28,50 +28,40 @@ const Home = () => {
         }
     }
 
-  
-
-
-
     return (
-        <Container className="">
-            <Form onSubmit={handleSubmit(findMovie)} >
-                <Form.Group className="text-center">
+        <Container>
+            <Form onSubmit={handleSubmit(findMovie)} className="p-top-3 d-flex" >
                     <Form.Control 
                         type="text" 
                         name="movie" 
                         placeholder = "Search a Movie"
                         ref={register({ required: true })}
                         />
-                </Form.Group>
-                <Button className="" type="submit">Submit</Button>
+                <button type="submit">Go</button>
             </Form>
-            <Row>
-                {moviesLength ? (
-                    <p>{moviesLength}</p>
-                ) : ( 
-                    <p></p>
+            <div className="text-center">
+                {movies && (
+                    <p>{movies.length} results</p>
                 )}
-            </Row>
-            <Row>
+            </div>
+            <section className="card-container">
                 {movies ? (
                     movies.map( (movie) => (
-                        <Col lg={4} xs={6} className="card text-center" key={movie.id}>
-                            <h3>{movie.title}</h3> 
-                            <p>{movie.release_date} | {movie.original_language} | {movie.popularity} </p> 
-                            <p>{movie.overview}</p> 
-                            <p>{movie.length}</p>
-
-                        </Col>
+                        <div className="text-center c-card" key={movie.id}>
+                            <MovieCard 
+                                title={movie.title}
+                                release_date={movie.release_date}
+                                original_language={movie.original_language}
+                                popularity={movie.popularity}
+                                overview={movie.overview}
+                                poster_path={movie.poster_path}
+                            /> 
+                        </div>
                     ))
                     ) : ( 
-                        <div>{message}</div>
+                        <p>{message} {error}</p>
                 )}
-            </Row>
-
-            
-
-            
-                
+            </section> 
         </Container>
     )
 }

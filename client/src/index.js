@@ -6,6 +6,7 @@ import './styles/fonts.css';
 import './styles/themes.css';
 import './styles/layout.css';
 import './styles/index.css';
+import './styles/responsive.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
