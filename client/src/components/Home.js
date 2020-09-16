@@ -1,18 +1,31 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { Container, Form } from "react-bootstrap";
+import { Container, Form, Button, Modal, Dropdown } from "react-bootstrap";
 
 import MovieCard from './MovieCard';
 
 const Home = () => {
     const { register, handleSubmit } = useForm();
-    const [ movies, setMovies ] = useState([]);
-    const [ message, setMessage ] = useState('');
-    const [ error, setError ] = useState('');
+    const [movies, setMovies] = useState([]);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+
+    const [ isOpen, setIsOpen ] = useState([]);
+
+    const handleDopdownClick = id => {
+        id = id.target.id;
+        const clicked = isOpen;
+        clicked[id] = !clicked[id];
+        setIsOpen(clicked);
+        console.log(isOpen[id]);
+    };
+
+
+ 
 
     const findMovie = async (data, e) => {
-        const result = await axios.post("http://localhost:8080/api/movie", data )
+        const result = await axios.post("/api/movie", data)
         try {
             if (!result.data.movies) {
                 setMessage(result.data.message);
@@ -21,6 +34,7 @@ const Home = () => {
             e.target.reset();
             const allmovies = result.data.movies
             setMovies(allmovies);
+            allmovies.forEach(movie => isOpen.push ({ movieId: movie.id, value: false}));
         }
         catch (error) {
             setError(result.data.error);
@@ -28,15 +42,17 @@ const Home = () => {
         }
     }
 
+
+
     return (
         <Container>
             <Form onSubmit={handleSubmit(findMovie)} className="p-top-3 d-flex" >
-                    <Form.Control 
-                        type="text" 
-                        name="movie" 
-                        placeholder = "Search a Movie"
-                        ref={register({ required: true })}
-                        />
+                <Form.Control
+                    type="text"
+                    name="movie"
+                    placeholder="Search a Movie"
+                    ref={register({ required: true })}
+                />
                 <button type="submit">Go</button>
             </Form>
             <div className="text-center">
@@ -46,22 +62,26 @@ const Home = () => {
             </div>
             <section className="card-container">
                 {movies ? (
-                    movies.map( (movie) => (
+                    movies.map((movie) => (
                         <div className="text-center c-card" key={movie.id}>
-                            <MovieCard 
+                            <MovieCard
                                 title={movie.title}
                                 release_date={movie.release_date}
                                 original_language={movie.original_language}
                                 popularity={movie.popularity}
                                 overview={movie.overview}
                                 poster_path={movie.poster_path}
-                            /> 
+                            />
+                            <button id={movie.id} onClick={handleDopdownClick}>toggle</button>
+                            {isOpen[movie.id] === true && (
+                                <p>{movie.overview}</p>
+                            )}
                         </div>
                     ))
-                    ) : ( 
-                        <p>{message} {error}</p>
-                )}
-            </section> 
+                ) : (
+                        <p className="alert alert-danger">{message} {error}</p>
+                    )}
+            </section>
         </Container>
     )
 }

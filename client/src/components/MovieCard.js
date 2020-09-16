@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 function MovieCard(props) {
+
+
     return (
         <>
             <img alt="movie" className="movie-img" src={`https://image.tmdb.org/t/p/w500/${props.poster_path}`}/>
