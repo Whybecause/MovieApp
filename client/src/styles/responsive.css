@@ -1,10 +1,18 @@
-@media only screen and (max-width: 960px ) {
+@media only screen and (max-width: 990px ) {
     .c-card {
         width: 46%;
     }
+    .p-overview {
+        width: 40vw;
+    }
+
+
 }
-@media only screen and (max-width: 540px ) {
+@media only screen and (max-width: 445px ) {
     .c-card {
         width: 100%;
+    }
+    .p-overview {
+        width: 70vw;
     }
 }

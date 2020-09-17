@@ -12,17 +12,18 @@ const Home = () => {
     const [error, setError] = useState('');
 
     const [ isOpen, setIsOpen ] = useState([]);
+    const [ target, setTarget ] = useState([]);
 
-    const handleDopdownClick = id => {
-        id = id.target.id;
+    const handleDopdownClick = e => {
+        const id = e.target.id;
         const clicked = isOpen;
         clicked[id] = !clicked[id];
-        setIsOpen(clicked);
-        console.log(isOpen[id]);
-    };
-
-
- 
+        setIsOpen( clicked);
+         setTarget( {
+            id: id,
+            value: isOpen[id]
+        });
+    }
 
     const findMovie = async (data, e) => {
         const result = await axios.post("/api/movie", data)
@@ -41,8 +42,6 @@ const Home = () => {
             e.target.reset();
         }
     }
-
-
 
     return (
         <Container>
@@ -71,16 +70,19 @@ const Home = () => {
                                 popularity={movie.popularity}
                                 overview={movie.overview}
                                 poster_path={movie.poster_path}
+                                id={movie.id}
+                                overview={movie.overview}
+                                value={target.value}
+                                targetId={target.id}
+                                handleDopdownClick={handleDopdownClick}
                             />
-                            <button id={movie.id} onClick={handleDopdownClick}>toggle</button>
-                            {isOpen[movie.id] === true && (
-                                <p>{movie.overview}</p>
-                            )}
                         </div>
+ 
                     ))
                 ) : (
                         <p className="alert alert-danger">{message} {error}</p>
                     )}
+                    
             </section>
         </Container>
     )
