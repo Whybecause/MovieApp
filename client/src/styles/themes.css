@@ -15,6 +15,16 @@ button:hover {
   
 }
 
+a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+a:hover {
+    color: rgba(219, 219, 219, 0.966);
+    text-decoration: none;
+
+}
+
 .c-card {
     border: 1px solid rgba(255, 255, 0, 0.473);
     background-color: black;
@@ -22,4 +32,10 @@ button:hover {
 
 .p-discret {
     color: grey;
+}
+
+.spinner-svg {
+    background: url('../assets/spinner.svg') center no-repeat;
+    height: 50vh;
+    width: 50vw;
 }

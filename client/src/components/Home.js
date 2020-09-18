@@ -1,90 +1,57 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { Container, Form, Button, Modal, Dropdown } from "react-bootstrap";
-
+import React, { useState, useEffect } from "react";
+import { Container } from "react-bootstrap";
 import MovieCard from './MovieCard';
 
+import axios from "axios";
+
 const Home = () => {
-    const { register, handleSubmit } = useForm();
-    const [movies, setMovies] = useState([]);
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
-
-    const [ isOpen, setIsOpen ] = useState([]);
-    const [ target, setTarget ] = useState([]);
-
-    const handleDopdownClick = e => {
-        const id = e.target.id;
-        const clicked = isOpen;
-        clicked[id] = !clicked[id];
-        setIsOpen( clicked);
-         setTarget( {
-            id: id,
-            value: isOpen[id]
-        });
+    const [popularMovies, setPopularMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    // GET POPULAR MOVIES BY DEFAULT on HOME
+    async function getPopularMovies() {
+        await axios.get("/api/popular")
+            .then((response) => {
+                setPopularMovies(response.data.results);
+                setLoading(false);
+                console.log(response.data.results);
+            })
+            .catch((e) => {
+                setLoading(false);
+                console.log(e);
+            })
     }
 
-    const findMovie = async (data, e) => {
-        const result = await axios.post("/api/movie", data)
-        try {
-            if (!result.data.movies) {
-                setMessage(result.data.message);
-                e.target.reset();
-            }
-            e.target.reset();
-            const allmovies = result.data.movies
-            setMovies(allmovies);
-            allmovies.forEach(movie => isOpen.push ({ movieId: movie.id, value: false}));
-        }
-        catch (error) {
-            setError(result.data.error);
-            e.target.reset();
-        }
-    }
+    useEffect(() => {
+        getPopularMovies();
+    }, []);
+
+
 
     return (
         <Container>
-            <Form onSubmit={handleSubmit(findMovie)} className="p-top-3 d-flex" >
-                <Form.Control
-                    type="text"
-                    name="movie"
-                    placeholder="Search a Movie"
-                    ref={register({ required: true })}
-                />
-                <button type="submit">Go</button>
-            </Form>
-            <div className="text-center">
-                {movies && (
-                    <p>{movies.length} results</p>
-                )}
-            </div>
+            {/* POPULAR MOVIES */}
+            <h3 className="text-center c-pad">Popular Movies</h3>
             <section className="card-container">
-                {movies ? (
-                    movies.map((movie) => (
-                        <div className="text-center c-card" key={movie.id}>
-                            <MovieCard
-                                title={movie.title}
-                                release_date={movie.release_date}
-                                original_language={movie.original_language}
-                                popularity={movie.popularity}
-                                overview={movie.overview}
-                                poster_path={movie.poster_path}
-                                id={movie.id}
-                                overview={movie.overview}
-                                value={target.value}
-                                targetId={target.id}
-                                handleDopdownClick={handleDopdownClick}
-                            />
-                        </div>
- 
-                    ))
+                {loading ? (
+                    <div className="spinner-svg"></div>
                 ) : (
-                        <p className="alert alert-danger">{message} {error}</p>
+                        popularMovies.map((popular) => (
+                            <div className="text-center c-card" key={popular.id} >
+                                <MovieCard
+                                    release_date={popular.release_date}
+                                    original_language={popular.original_language}
+                                    popularity={popular.popularity}
+                                    overview={popular.overview}
+                                    poster_path={popular.poster_path}
+                                    id={popular.id}
+                                />
+
+                            </div>
+                        ))
                     )}
-                    
             </section>
         </Container>
+
     )
 }
 
